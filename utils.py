@@ -45,3 +45,6 @@ def prompt_input(options: list, input_message: str) -> str:
     return user_input.lower()
 
 
+def append_text(filename: str, content: str) -> None:
+    with open(filename, 'a', encoding='utf-8') as file:
+        file.write(content + '\n')
