@@ -3,6 +3,7 @@ import numpy as np
 
 from Classes.Population import Population
 from Classes.TournamentSelection import TournamentSelection
+from Classes.Crossover import Crossover
 
 """
 Function to create distance matrix from XML data
@@ -53,12 +54,34 @@ Function to generate parent solutions using tournament selection
 
     :parameter population -> array of current population
     
-    :return parent1, parent2 -> two selected parents from the selection pool
+    :return parent -> selected parent from the selection pool
 """
 
 
-def parent_selection(population, distance_matrix, tour_selection_size):
+def parent_selection(
+        population: object,
+        distance_matrix: object,
+        tour_selection_size: int
+) -> object:
     tour_selection = TournamentSelection(population, distance_matrix)
     pool = tour_selection.selection_pool(tour_selection_size)
     parent = tour_selection.parents_selection(pool)
     return parent
+
+
+"""
+Function to generate two child solutions using single-point crossover
+
+    :parameter parent1 -> parent 1 array
+    :parameter parent1 -> parent 1 array
+    
+    :return child1, child2 -> two children generated
+"""
+
+
+def single_point_crossover(parent1: object, parent2: object) -> object:
+    crossover = Crossover(parent1, parent2)
+
+    child1, child2 = crossover.single_point()
+
+    return child1, child2
