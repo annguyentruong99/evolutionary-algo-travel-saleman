@@ -14,7 +14,7 @@ Function to create distance matrix from XML data
 """
 
 
-def create_distance_matrix(vertexes: list) -> object:
+def create_distance_matrix(vertexes: list) -> np.ndarray:
     cities_matrix = []
     for index, vertex in enumerate(vertexes):
         city = list(map(lambda edge: float(edge['@cost']), vertex['edge']))
@@ -36,8 +36,8 @@ Function to generate initial population
 
 
 def init_population(
-        cities: object,
-        distance_matrix: object,
+        cities: np.ndarray,
+        distance_matrix: np.ndarray,
         n_pop: int,
         seed: int
 ) -> Population:
@@ -59,10 +59,10 @@ Function to generate parent solutions using tournament selection
 
 
 def parent_selection(
-        population: object,
-        distance_matrix: object,
+        population: np.ndarray,
+        distance_matrix: np.ndarray,
         tour_selection_size: int
-) -> object:
+) -> np.ndarray:
     tour_selection = TournamentSelection(population, distance_matrix)
     pool = tour_selection.selection_pool(tour_selection_size)
     parent = tour_selection.parents_selection(pool)
