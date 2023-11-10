@@ -3,9 +3,10 @@ from utils import contains_duplicates, find_duplicate_indexes
 
 
 class Crossover:
-    def __init__(self, parent1, parent2):
+    def __init__(self, parent1, parent2, crossover_rate):
         self.parent1 = parent1
         self.parent2 = parent2
+        self.crossover_rate = crossover_rate
 
     @staticmethod
     def fix_child(child, parent):
@@ -26,15 +27,21 @@ class Crossover:
         :return: child1, child2: ndarray, ndarray
         """
         rng = np.random.default_rng()
-        crossover_point = rng.integers(1, len(self.parent1) - 1)
+        # Decide whether to perform crossover based on the crossover rate
+        if rng.random() <= self.crossover_rate:
+            crossover_point = rng.integers(1, len(self.parent1) - 1)
 
-        child1 = np.append(self.parent1[:crossover_point], self.parent2[crossover_point:])
-        child2 = np.append(self.parent2[:crossover_point], self.parent1[crossover_point:])
+            child1 = np.append(self.parent1[:crossover_point], self.parent2[crossover_point:])
+            child2 = np.append(self.parent2[:crossover_point], self.parent1[crossover_point:])
 
-        if contains_duplicates(child1) and contains_duplicates(child2):
-            fixed_child1 = self.fix_child(child1, self.parent1)
-            fixed_child2 = self.fix_child(child2, self.parent2)
+            if contains_duplicates(child1) and contains_duplicates(child2):
+                fixed_child1 = self.fix_child(child1, self.parent1)
+                fixed_child2 = self.fix_child(child2, self.parent2)
 
-            return fixed_child1, fixed_child2
+                return fixed_child1, fixed_child2
 
-        return child1, child2
+            return child1, child2
+        else:
+            # If crossover is not performed, children are copies of the parents
+            child1, child2 = self.parent1.copy(), self.parent2.copy()
+            return child1, child2

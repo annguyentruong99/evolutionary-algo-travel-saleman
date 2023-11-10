@@ -1,5 +1,6 @@
 import time
 from tqdm import tqdm
+from prettytable import PrettyTable
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -33,11 +34,15 @@ def main():
         'multi-point',
     ]
     crossover = prompt_input(crossover_options, 'Choose the type of crossover you want to perform:\n')
+    # Choose the crossover rate
+    crossover_rate = float(input('Specify a crossover rate:\n'))
     # Choose the type of mutation
     mutation_options = [
         'swap'
     ]
     mutation = prompt_input(mutation_options, 'Choose the type of mutation you want to perform:\n')
+    # Choose the mutation rate
+    mutation_rate = float(input('Specify a mutation rate:\n'))
 
     """
     _____________________
@@ -77,21 +82,21 @@ Number of initial population: {n_pop}\n\
 Random Seed: {seed}\n\
 Tournament Size: {tour_selection_size}\n\
 Crossover: {crossover}\n\
-Mutation: {mutation}\n'
+Crossover Rate: {crossover_rate}\n\
+Mutation: {mutation}\n\
+Mutation Rate: {mutation_rate}\n'
     )
     append_text(
         log_file_path,
         '***** Distance matrix: *****\n'
     )
+    distance_matrix_table = PrettyTable([' '] + cities.tolist())
+    for row_label, row in zip(range(len(distance_matrix)), distance_matrix):
+        distance_matrix_table.add_row([row_label + 1] + list(row))
     append_text(
         log_file_path,
-        "   " + "      ".join(map(str, cities))
+        str(distance_matrix_table)
     )
-    for row_label, row in zip(range(len(distance_matrix)), distance_matrix):
-        append_text(
-            log_file_path,
-            '%s  [%s]' % (row_label + 1, '  '.join('%03s' % i for i in row))
-        )
     append_text(
         log_file_path,
         '\n***** Initial Population: *****\n'
@@ -133,14 +138,14 @@ Mutation: {mutation}\n'
         Crossover
         _____________________
         """
-        child1, child2 = single_point_crossover(parent1, parent2)
+        child1, child2 = single_point_crossover(parent1, parent2, crossover_rate)
 
         """
         _____________________
         Mutation
         _____________________
         """
-        mutated_child1, mutated_child2 = swap_mutation(child1, child2)
+        mutated_child1, mutated_child2 = swap_mutation(child1, child2, mutation_rate)
 
         """
         _____________________
@@ -152,7 +157,7 @@ Mutation: {mutation}\n'
 
         """
         _____________________
-        Record the best score for 
+        Record the best score for each iteration
         _____________________
         """
         best_scores.append(pop.best_score)
@@ -169,6 +174,16 @@ Mutation: {mutation}\n'
     end_time = time.time()
 
     execution_time = end_time - start_time
+
+    # Log the lowest total distance after terminated
+    append_text(
+        log_file_path,
+        f'***** Best Solution After Iterations: {pop.best_sol} *****\n'
+    )
+    append_text(
+        log_file_path,
+        f'***** Shortest Total Distance After Iterations: {pop.best_score} *****\n'
+    )
 
     append_text(
         log_file_path,
