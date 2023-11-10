@@ -21,7 +21,6 @@ class Crossover:
         """
         rng = np.random.default_rng()
         crossover_point = rng.integers(1, len(self.parent1) - 1)
-        print('crossover_point', crossover_point)
 
         child1 = np.append(self.parent1[:crossover_point], self.parent2[crossover_point:])
         child2 = np.append(self.parent2[:crossover_point], self.parent1[crossover_point:])

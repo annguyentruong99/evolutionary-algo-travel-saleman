@@ -1,38 +1,39 @@
 import numpy as np
 
+from Classes.Fitness import Fitness
 
-class Population:
-    def __init__(self, population, distance_matrix):
-        """
-        :type population: ndarray
-        :type distance_matrix: ndarray
-        """
+
+class Population(Fitness):
+    def __init__(self, population: np.ndarray, distance_matrix):
+        super().__init__(distance_matrix)
         self.population = population
-        self.distance_matrix = distance_matrix
         self.parents = []
-        self.score = 0
+        self.best_score = 0
         self.best_sol = None
-
-    def fitness(self, chromosome):
-        """
-        Method to calculate distance for each individual solution
-        :param chromosome: ndarray
-        :return: sum of the distance
-        """
-        return sum(
-            [
-                self.distance_matrix[chromosome[i], chromosome[i + 1]] for i in range(len(chromosome) - 1)
-            ] + self.distance_matrix[chromosome[-1], chromosome[0]]
-        )
+        self.worst_score = 0
+        self.worst_sol = None
 
     def evaluate(self):
         """
         Method to determine the best solution from the initial population
         :return: None
         """
+        # calculate the distance of each solution in population
         distances = np.array(
-            [self.fitness(chromosome - 1) for chromosome in self.population]
+            [self.calc_fitness(chromosome - 1) for chromosome in self.population]
         )
-        self.score = np.min(distances)
-        self.best_sol = self.population[distances.tolist().index(self.score)]
+        # determine the best and worst solution
+        self.best_score = np.min(distances)
+        self.best_sol = self.population[distances.tolist().index(self.best_score)]
+        self.worst_score = np.max(distances)
+        self.worst_sol = self.population[distances.tolist().index(self.worst_score)]
 
+    def replacement(self, child):
+        # calculate the distance of the child
+        child_score = self.calc_fitness(child - 1)
+        # replace the solution in the population with child if child's distance is smaller or equal
+        if child_score <= self.worst_score:
+            worst_sol_ind = np.argmax(self.worst_sol)
+            self.population[worst_sol_ind] = child
+        # re-evaluate the population to make sure we get a new worst solution
+        self.evaluate()

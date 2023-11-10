@@ -4,6 +4,7 @@ import numpy as np
 from Classes.Population import Population
 from Classes.TournamentSelection import TournamentSelection
 from Classes.Crossover import Crossover
+from Classes.Mutation import Mutation
 
 """
 Function to create distance matrix from XML data
@@ -62,11 +63,10 @@ def parent_selection(
         population: np.ndarray,
         distance_matrix: np.ndarray,
         tour_selection_size: int
-) -> np.ndarray:
+) -> tuple[np.ndarray, np.ndarray]:
     tour_selection = TournamentSelection(population, distance_matrix)
-    pool = tour_selection.selection_pool(tour_selection_size)
-    parent = tour_selection.parents_selection(pool)
-    return parent
+    parent1, parent2 = tour_selection.parents_selection(tour_selection_size)
+    return parent1, parent2
 
 
 """
@@ -79,9 +79,18 @@ Function to generate two child solutions using single-point crossover
 """
 
 
-def single_point_crossover(parent1: object, parent2: object) -> object:
+def single_point_crossover(
+        parent1: np.ndarray,
+        parent2: np.ndarray
+) -> tuple[np.ndarray, np.ndarray]:
     crossover = Crossover(parent1, parent2)
 
     child1, child2 = crossover.single_point()
 
     return child1, child2
+
+
+def swap_mutation(child1: np.ndarray, child2: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    mutation = Mutation(child1, child2)
+    mutated_child1, mutated_child2 = mutation.swap_mutation()
+    return mutated_child1, mutated_child2
