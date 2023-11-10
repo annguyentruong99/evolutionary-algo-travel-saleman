@@ -9,7 +9,7 @@ class Fitness:
         """
         Method to calculate distance for each individual solution
         :param chromosome: ndarray
-        :return: sum of the distance
+        :return: sum of the distance: int
         """
         return sum(
             [

@@ -9,6 +9,12 @@ class Crossover:
 
     @staticmethod
     def fix_child(child, parent):
+        """
+        Method to fix children if there are duplicates
+        :param child: ndarray
+        :param parent: ndarray
+        :return: child: ndarray
+        """
         first_duplicate_ind, second_duplicate_ind = find_duplicate_indexes(child)
         city_to_swap = parent[second_duplicate_ind]
         child[first_duplicate_ind] = city_to_swap

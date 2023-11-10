@@ -9,6 +9,7 @@ class Mutation:
     def swap_mutation(self):
         """
         Performs swap mutation on both children by swapping two randomly chosen elements in each child.
+        :return: None
         """
 
         # Define a function for swapping two elements in an array

@@ -6,16 +6,13 @@ from Classes.TournamentSelection import TournamentSelection
 from Classes.Crossover import Crossover
 from Classes.Mutation import Mutation
 
-"""
-Function to create distance matrix from XML data
-
-    :parameter vertexes (list): list of vertexes
-    
-    :return cities_matrix (Array): a numpy array of the distance matrix
-"""
-
 
 def create_distance_matrix(vertexes: list) -> np.ndarray:
+    """
+    Function to create distance matrix from XML data
+    :param vertexes: list
+    :return: ndarray
+    """
     cities_matrix = []
     for index, vertex in enumerate(vertexes):
         city = list(map(lambda edge: float(edge['@cost']), vertex['edge']))
@@ -24,24 +21,20 @@ def create_distance_matrix(vertexes: list) -> np.ndarray:
     return np.array(cities_matrix)
 
 
-"""
-Function to generate initial population
-
-    :parameter cities -> list of cities name
-    :parameter distance_matrix -> array of distance vectors
-    :parameter n_pop -> number of initial population
-    :parameter seed -> random seed
-    
-    :return Population
-"""
-
-
 def init_population(
         cities: np.ndarray,
         distance_matrix: np.ndarray,
         n_pop: int,
         seed: int
 ) -> Population:
+    """
+    Function to generate initial population
+    :param cities: ndarray
+    :param distance_matrix: ndarray
+    :param n_pop: int
+    :param seed: int
+    :return: Population
+    """
     # Set random seed
     np.random.seed(seed)
     return Population(
@@ -50,39 +43,33 @@ def init_population(
     )
 
 
-"""
-Function to generate parent solutions using tournament selection
-
-    :parameter population -> array of current population
-    
-    :return parent -> selected parent from the selection pool
-"""
-
-
 def parent_selection(
         population: np.ndarray,
         distance_matrix: np.ndarray,
         tour_selection_size: int
 ) -> tuple[np.ndarray, np.ndarray]:
+    """
+    Function to generate parent solutions using tournament selection
+    :param population: ndarray
+    :param distance_matrix: ndarray
+    :param tour_selection_size: int
+    :return: parent1, parent2: tuple[ndarray, ndarray]
+    """
     tour_selection = TournamentSelection(population, distance_matrix)
     parent1, parent2 = tour_selection.parents_selection(tour_selection_size)
     return parent1, parent2
-
-
-"""
-Function to generate two child solutions using single-point crossover
-
-    :parameter parent1 -> parent 1 array
-    :parameter parent1 -> parent 1 array
-    
-    :return child1, child2 -> two children generated
-"""
 
 
 def single_point_crossover(
         parent1: np.ndarray,
         parent2: np.ndarray
 ) -> tuple[np.ndarray, np.ndarray]:
+    """
+    Function to generate two child solutions using single-point crossover
+    :param parent1: ndarray
+    :param parent2: ndarray
+    :return: child1, child2: tuple[ndarray, ndarray]
+    """
     crossover = Crossover(parent1, parent2)
 
     child1, child2 = crossover.single_point()
@@ -90,7 +77,16 @@ def single_point_crossover(
     return child1, child2
 
 
-def swap_mutation(child1: np.ndarray, child2: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+def swap_mutation(
+        child1: np.ndarray,
+        child2: np.ndarray
+) -> tuple[np.ndarray, np.ndarray]:
+    """
+    Function to perform swap mutation
+    :param child1: ndarray
+    :param child2: ndarray
+    :return: mutated_child1, mutated_child2: tuple[ndarray, ndarray]
+    """
     mutation = Mutation(child1, child2)
     mutated_child1, mutated_child2 = mutation.swap_mutation()
     return mutated_child1, mutated_child2

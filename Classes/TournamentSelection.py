@@ -46,6 +46,7 @@ class TournamentSelection(Fitness):
         Method to select two best fit solutions as parents from the population using tournament selection.
         The first selected parent is removed from the population before selecting the second to avoid duplication.
         :param tour_selection_size: int
+        :return: self.parent1, self.parent2: tuple[ndarray, ndarray]
         """
         # Select first parent
         pool = self.selection_pool(tour_selection_size)

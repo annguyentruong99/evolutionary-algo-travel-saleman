@@ -2,17 +2,12 @@ import os
 import xmltodict
 import numpy as np
 
-"""
-Function to read the XML file
-
-    Parameters:
-        country (str): a string that associates with data file
-    Return:
-        data (list): a list containing all the vertexes from the data file
-"""
-
-
 def read_xml(country: str) -> list:
+    """
+    Function to read the XML file
+    :param country: str
+    :return: data: list
+    """
     if country == 'brazil':
         with open('data/brazil58.xml') as brazil_file:
             data = xmltodict.parse(brazil_file.read())
@@ -22,18 +17,13 @@ def read_xml(country: str) -> list:
     return data['travellingSalesmanProblemInstance']['graph']['vertex']
 
 
-"""
-Function to prompt user to give input based on given options
-
-    Parameters:
-        options (list): list of option strings
-        input_message (str): a string to display to prompt user to input an option
-    Return:
-         user_input (str): an option from the list of options
-"""
-
-
 def prompt_input(options: list, input_message: str) -> str:
+    """
+    Function to prompt user to give input based on given options
+    :param options: list
+    :param input_message: str
+    :return: user_input: str
+    """
     user_input = ''
 
     for index, item in enumerate(options):

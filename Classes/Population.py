@@ -29,6 +29,11 @@ class Population(Fitness):
         self.worst_sol = self.population[distances.tolist().index(self.worst_score)]
 
     def replacement(self, child):
+        """
+        Method to replace the solution in the population with child if child's distance is smaller or equal
+        :param child: ndarray
+        :return: None
+        """
         # calculate the distance of the child
         child_score = self.calc_fitness(child - 1)
         # replace the solution in the population with child if child's distance is smaller or equal
