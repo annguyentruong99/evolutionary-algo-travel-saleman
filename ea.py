@@ -62,15 +62,17 @@ def parent_selection(
 
 def single_point_crossover(
         parent1: np.ndarray,
-        parent2: np.ndarray
+        parent2: np.ndarray,
+        crossover_rate: float
 ) -> tuple[np.ndarray, np.ndarray]:
     """
     Function to generate two child solutions using single-point crossover
     :param parent1: ndarray
     :param parent2: ndarray
+    :param crossover_rate: float
     :return: child1, child2: tuple[ndarray, ndarray]
     """
-    crossover = Crossover(parent1, parent2)
+    crossover = Crossover(parent1, parent2, crossover_rate)
 
     child1, child2 = crossover.single_point()
 
@@ -79,14 +81,16 @@ def single_point_crossover(
 
 def swap_mutation(
         child1: np.ndarray,
-        child2: np.ndarray
+        child2: np.ndarray,
+        mutation_rate: float
 ) -> tuple[np.ndarray, np.ndarray]:
     """
     Function to perform swap mutation
     :param child1: ndarray
     :param child2: ndarray
+    :param mutation_rate: float
     :return: mutated_child1, mutated_child2: tuple[ndarray, ndarray]
     """
-    mutation = Mutation(child1, child2)
+    mutation = Mutation(child1, child2, mutation_rate)
     mutated_child1, mutated_child2 = mutation.swap_mutation()
     return mutated_child1, mutated_child2
