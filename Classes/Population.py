@@ -38,7 +38,7 @@ class Population(Fitness):
         child_score = self.calc_fitness(child - 1)
         # replace the solution in the population with child if child's distance is smaller or equal
         if child_score <= self.worst_score:
-            worst_sol_ind = np.argmax(self.worst_sol)
+            worst_sol_ind = np.where(np.all(self.population == self.worst_sol, axis=1))[0][0]
             self.population[worst_sol_ind] = child
         # re-evaluate the population to make sure we get a new worst solution
         self.evaluate()
