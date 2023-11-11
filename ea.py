@@ -73,9 +73,26 @@ def single_point_crossover(
     :return: child1, child2: tuple[ndarray, ndarray]
     """
     crossover = Crossover(parent1, parent2, crossover_rate)
-
     child1, child2 = crossover.single_point()
+    return child1, child2
 
+
+def multi_points_crossover(
+        parent1: np.ndarray,
+        parent2: np.ndarray,
+        crossover_rate: float,
+        num_points: int
+) -> tuple[np.ndarray, np.ndarray]:
+    """
+    Function to generate two child solutions using single-point crossover
+    :param parent1: ndarray
+    :param parent2: ndarray
+    :param crossover_rate: float
+    :param num_points: int
+    :return: child1, child2: tuple[ndarray, ndarray]
+    """
+    crossover = Crossover(parent1, parent2, crossover_rate)
+    child1, child2 = crossover.multi_points(num_points)
     return child1, child2
 
 
