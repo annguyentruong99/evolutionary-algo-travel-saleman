@@ -2,6 +2,7 @@ import os
 import xmltodict
 import numpy as np
 
+
 def read_xml(country: str) -> list:
     """
     Function to read the XML file
@@ -24,17 +25,63 @@ def prompt_input(options: list, input_message: str) -> str:
     :param input_message: str
     :return: user_input: str
     """
-    user_input = ''
+    # Display the main prompt and options
+    print(input_message)
+    for i, option in enumerate(options, 1):
+        print(f"{i}. {option}")
 
-    for index, item in enumerate(options):
-        input_message += f'{index + 1}) {item.capitalize()}\n'
+    # Get user's choice
+    while True:
+        try:
+            choice = int(input("Enter your choice (number): "))
+            if 1 <= choice <= len(options):
+                break
+            else:
+                print("Invalid choice, please try again.")
+        except ValueError:
+            print("Please enter a number.")
 
-    input_message += 'Your choice: '
+    chosen_option = options[choice - 1]
 
-    while user_input.lower() not in options:
-        user_input = input(input_message)
+    return chosen_option
 
-    return user_input.lower()
+
+def prompt_multi_input(options: list, input_message: str, additional_input=None):
+    """
+        General utility function to get user input with specified options.
+        If additional_input is provided, it will prompt for more input based on the user's choice.
+
+        :param input_message: str
+        :param options: list
+        :param additional_input: dict
+        :return: tuple
+        """
+
+    # Display the main prompt and options
+    print(input_message)
+    for i, option in enumerate(options, 1):
+        print(f"{i}. {option}")
+
+    # Get user's choice
+    while True:
+        try:
+            choice = int(input("Enter your choice (number): "))
+            if 1 <= choice <= len(options):
+                break
+            else:
+                print("Invalid choice, please try again.")
+        except ValueError:
+            print("Please enter a number.")
+
+    chosen_option = options[choice - 1]
+
+    # Check if additional input is required for the chosen option
+    if additional_input and chosen_option in additional_input:
+        additional_prompt = additional_input[chosen_option]
+        additional_value = input(additional_prompt)
+        return chosen_option, additional_value
+
+    return chosen_option, None
 
 
 def append_text(filename: str, content: str) -> None:

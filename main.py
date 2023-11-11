@@ -4,8 +4,8 @@ from prettytable import PrettyTable
 import numpy as np
 import matplotlib.pyplot as plt
 
-from utils import prompt_input, read_xml, append_text
-from ea import create_distance_matrix, init_population, parent_selection, single_point_crossover, swap_mutation
+from utils import prompt_input, prompt_multi_input, read_xml, append_text
+from ea import create_distance_matrix, init_population, parent_selection, single_point_crossover, swap_mutation, multi_swap_mutation
 
 TERMINATION = 10000
 
@@ -22,7 +22,7 @@ def main():
     param_group = int(input('Enter your parameters group number:\n'))
     # Choose the city to run the experiment, choose between brazil or burma
     country_options = ['brazil', 'burma']
-    country_input = prompt_input(country_options, 'Pick a country that you want to run the experiment on:\n')
+    country_input = prompt_input(country_options, 'Pick a country that you want to run the experiment on:')
     # Choose initial population
     n_pop = int(input('Pick your initial population:\n'))
     seed = int(input('Pick a random seed:\n'))
@@ -33,14 +33,22 @@ def main():
         'single-point',
         'multi-point',
     ]
-    crossover = prompt_input(crossover_options, 'Choose the type of crossover you want to perform:\n')
+    crossover = prompt_input(crossover_options, 'Choose the type of crossover you want to perform:')
     # Choose the crossover rate
     crossover_rate = float(input('Specify a crossover rate:\n'))
     # Choose the type of mutation
     mutation_options = [
-        'swap'
+        'swap',
+        'multi-swap'
     ]
-    mutation = prompt_input(mutation_options, 'Choose the type of mutation you want to perform:\n')
+    additional_input_prompts = {
+        'multi-swap': 'Enter the number of swaps:\n'
+    }
+    mutation, num_swaps = prompt_multi_input(
+        mutation_options,
+        'Choose the type of mutation you want to perform:\n',
+        additional_input_prompts
+    )
     # Choose the mutation rate
     mutation_rate = float(input('Specify a mutation rate:\n'))
 
@@ -145,7 +153,11 @@ Mutation Rate: {mutation_rate}\n'
         Mutation
         _____________________
         """
-        mutated_child1, mutated_child2 = swap_mutation(child1, child2, mutation_rate)
+        if mutation == 'swap':
+            mutated_child1, mutated_child2 = swap_mutation(child1, child2, mutation_rate)
+
+        if mutation == 'multi-swap':
+            mutated_child1, mutated_child2 = multi_swap_mutation(child1, child2, mutation_rate, int(num_swaps))
 
         """
         _____________________
