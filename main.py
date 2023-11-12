@@ -4,14 +4,12 @@ from prettytable import PrettyTable
 import numpy as np
 import matplotlib.pyplot as plt
 
-from utils import prompt_input, prompt_multi_input, read_xml, append_text
+from utils import prompt_input, read_xml, append_text
 from ea import (create_distance_matrix,
                 init_population,
                 parent_selection,
-                single_point_crossover,
-                multi_points_crossover,
-                swap_mutation,
-                multi_swap_mutation)
+                crossover,
+                mutation)
 
 TERMINATION = 10000
 
@@ -32,36 +30,15 @@ def main():
     n_pop = int(input('Pick your initial population:\n'))
     # Choose the tournament size
     tour_selection_size = int(input('Pick number of tournament pool selections:\n'))
-    # Choose the type of crossover
-    crossover_options = [
-        'single-point',
-        'multi-points',
-    ]
-    additional_crossover_input = {
-        'multi-points': 'Enter the number of crossover points(larger than 1):\n'
-    }
-    crossover, num_points = prompt_multi_input(
-        crossover_options,
-        'Choose the type of crossover you want to perform:',
-        additional_crossover_input
-    )
+    # Choose the number of points for crossover
+    num_points = int(input('Choose the number of points for crossover:\n'))
     # Choose the crossover rate
     crossover_rate = float(input('Specify a crossover rate:\n'))
-    # Choose the type of mutation
-    mutation_options = [
-        'swap',
-        'multi-swap'
-    ]
-    additional_mutation_input = {
-        'multi-swap': 'Enter the number of swaps:\n'
-    }
-    mutation, num_swaps = prompt_multi_input(
-        mutation_options,
-        'Choose the type of mutation you want to perform:\n',
-        additional_mutation_input
-    )
+    # Choose the number of points mutation
+    num_swaps = int(input('Choose the number of points for mutation:\n'))
     # Choose the mutation rate
     mutation_rate = float(input('Specify a mutation rate:\n'))
+    # Specify the number of trials for each experiment
     no_of_experiments = int(input('How many time do you want to run this experiment?\n'))
 
     for experiment in range(no_of_experiments):
@@ -101,15 +78,13 @@ def main():
         append_text(
             log_file_path,
             f'Dataset: {country_input}\n\
-    Number of initial population: {n_pop}\n\
-    Random Seed: {seed}\n\
-    Tournament Size: {tour_selection_size}\n\
-    Crossover: {crossover}\n\
-    Number of Crossover Points: {num_points if num_points is not None else "N/A"}\n\
-    Crossover Rate: {crossover_rate}\n\
-    Mutation: {mutation}\n\
-    Number of Mutation Points: {num_swaps if num_swaps is not None else "N/A"}\n\
-    Mutation Rate: {mutation_rate}\n'
+Number of initial population: {n_pop}\n\
+Random Seed: {seed}\n\
+Tournament Size: {tour_selection_size}\n\
+Crossover Points: {num_points}\n\
+Crossover Rate: {crossover_rate}\n\
+Mutation Points: {num_swaps}\n\
+Mutation Rate: {mutation_rate}\n'
         )
         append_text(
             log_file_path,
@@ -163,22 +138,16 @@ def main():
             Crossover
             _____________________
             """
-            if crossover == 'single-point':
-                child1, child2 = single_point_crossover(parent1, parent2, crossover_rate)
-
-            if crossover == 'multi-points':
-                child1, child2 = multi_points_crossover(parent1, parent2, crossover_rate, int(num_points))
+            crossover_operator = crossover(parent1, parent2, crossover_rate)
+            child1, child2 = crossover_operator.crossover(num_points)
 
             """
             _____________________
             Mutation
             _____________________
             """
-            if mutation == 'swap':
-                mutated_child1, mutated_child2 = swap_mutation(child1, child2, mutation_rate)
-
-            if mutation == 'multi-swap':
-                mutated_child1, mutated_child2 = multi_swap_mutation(child1, child2, mutation_rate, int(num_swaps))
+            mutation_operator = mutation(child1, child2, mutation_rate)
+            mutated_child1, mutated_child2 = mutation_operator.swap_mutation(num_swaps)
 
             """
             _____________________

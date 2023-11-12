@@ -60,47 +60,26 @@ def parent_selection(
     return parent1, parent2
 
 
-def single_point_crossover(
-        parent1: np.ndarray,
-        parent2: np.ndarray,
-        crossover_rate: float
-) -> tuple[np.ndarray, np.ndarray]:
-    """
-    Function to generate two child solutions using single-point crossover
-    :param parent1: ndarray
-    :param parent2: ndarray
-    :param crossover_rate: float
-    :return: child1, child2: tuple[ndarray, ndarray]
-    """
-    crossover = Crossover(parent1, parent2, crossover_rate)
-    child1, child2 = crossover.single_point()
-    return child1, child2
-
-
-def multi_points_crossover(
+def crossover(
         parent1: np.ndarray,
         parent2: np.ndarray,
         crossover_rate: float,
-        num_points: int
-) -> tuple[np.ndarray, np.ndarray]:
+) -> Crossover:
     """
     Function to generate two child solutions using single-point crossover
     :param parent1: ndarray
     :param parent2: ndarray
     :param crossover_rate: float
-    :param num_points: int
     :return: child1, child2: tuple[ndarray, ndarray]
     """
-    crossover = Crossover(parent1, parent2, crossover_rate)
-    child1, child2 = crossover.multi_points(num_points)
-    return child1, child2
+    return Crossover(parent1, parent2, crossover_rate)
 
 
-def swap_mutation(
+def mutation(
         child1: np.ndarray,
         child2: np.ndarray,
-        mutation_rate: float
-) -> tuple[np.ndarray, np.ndarray]:
+        mutation_rate: float,
+) -> Mutation:
     """
     Function to perform swap mutation
     :param child1: ndarray
@@ -108,17 +87,4 @@ def swap_mutation(
     :param mutation_rate: float
     :return: mutated_child1, mutated_child2: tuple[ndarray, ndarray]
     """
-    mutation = Mutation(child1, child2, mutation_rate)
-    mutated_child1, mutated_child2 = mutation.swap_mutation()
-    return mutated_child1, mutated_child2
-
-
-def multi_swap_mutation(
-        child1: np.ndarray,
-        child2: np.ndarray,
-        mutation_rate: float,
-        num_swaps: int
-) -> tuple[np.ndarray, np.ndarray]:
-    mutation = Mutation(child1, child2, mutation_rate)
-    mutated_child1, mutated_child2 = mutation.multi_swap_mutation(num_swaps)
-    return mutated_child1, mutated_child2
+    return Mutation(child1, child2, mutation_rate)

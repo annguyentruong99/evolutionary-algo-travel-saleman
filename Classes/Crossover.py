@@ -8,69 +8,43 @@ class Crossover:
         self.parent2 = parent2
         self.crossover_rate = crossover_rate
 
-    def single_point(self):
+    @staticmethod
+    def fix_child(child, parent):
         """
-        Method to generate 2 different children by single-point crossover
-        :return: child1, child2: ndarray, ndarray
+        Method to fix children if there are duplicates.
+        :param child: ndarray
+        :param parent: ndarray
+        :return: child: ndarray
         """
-        def fix_child(child, parent):
-            """
-            Method to fix children if there are duplicates
-            :param child: ndarray
-            :param parent: ndarray
-            :return: child: ndarray
-            """
-            first_duplicate_ind, second_duplicate_ind = find_duplicate_indexes(child)
-            city_to_swap = parent[second_duplicate_ind]
-            child[first_duplicate_ind] = city_to_swap
-            return child
+        if contains_duplicates(child):
+            unique_values = set()
+            duplicate_indices = []
 
-        rng = np.random.default_rng()
-        # Decide whether to perform crossover based on the crossover rate
-        if rng.random() <= self.crossover_rate:
-            crossover_point = rng.integers(1, len(self.parent1) - 1)
+            # Identify duplicates and their indices
+            for i, value in enumerate(child):
+                if value in unique_values:
+                    duplicate_indices.append(i)
+                else:
+                    unique_values.add(value)
 
-            child1 = np.append(self.parent1[:crossover_point], self.parent2[crossover_point:])
-            child2 = np.append(self.parent2[:crossover_point], self.parent1[crossover_point:])
+            missing_values = list(set(parent) - unique_values)
 
-            if contains_duplicates(child1) and contains_duplicates(child2):
-                fixed_child1 = fix_child(child1, self.parent1)
-                fixed_child2 = fix_child(child2, self.parent2)
+            # Replace duplicates with missing values
+            for i in duplicate_indices:
+                if missing_values:
+                    child[i] = missing_values.pop(0)
+                else:
+                    # This might need more sophisticated handling based on your problem specifics
+                    raise ValueError("Ran out of unique values to replace duplicates")
 
-                return fixed_child1, fixed_child2
+        return child
 
-            return child1, child2
-        else:
-            # If crossover is not performed, children are copies of the parents
-            return self.parent1.copy(), self.parent2.copy()
-
-    def multi_points(self, num_points):
+    def crossover(self, num_points):
         """
         Method to generate 2 different children by multi-point crossover.
         :param num_points: Number of crossover points.
         :return: child1, child2: ndarray, ndarray
         """
-
-        def fix_child(child, parent):
-            """
-            Method to fix children if there are duplicates.
-            :param child: ndarray
-            :param parent: ndarray
-            :return: child: ndarray
-            """
-            duplicate_indices = find_duplicate_indexes(child)
-            for i in duplicate_indices:
-                missing_values = list(set(parent) - set(child))
-                if missing_values:
-                    # Choose a random missing value to replace the duplicate
-                    replacement_value = np.random.choice(missing_values)
-                    child[i] = replacement_value
-                else:
-                    # Handle case where no missing values are left
-                    # This might need more sophisticated handling based on your problem specifics
-                    break
-            return child
-
         rng = np.random.default_rng()
         # Decide whether to perform crossover based on the crossover rate
         if rng.random() <= self.crossover_rate:
@@ -90,13 +64,10 @@ class Crossover:
                  , child2[crossover_points[i]:end_point]) = (child2[crossover_points[i]:end_point],
                                                              child1[crossover_points[i]:end_point])
 
-            if contains_duplicates(child1) and contains_duplicates(child2):
-                fixed_child1 = fix_child(child1, self.parent1)
-                fixed_child2 = fix_child(child2, self.parent2)
+            fixed_child1 = self.fix_child(child1, self.parent1)
+            fixed_child2 = self.fix_child(child2, self.parent2)
 
-                return fixed_child1, fixed_child2
-
-            return child1, child2
+            return fixed_child1, fixed_child2
         else:
             # If crossover is not performed, children are copies of the parents
             return self.parent1.copy(), self.parent2.copy()
