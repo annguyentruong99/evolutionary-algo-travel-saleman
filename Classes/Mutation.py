@@ -9,7 +9,7 @@ class Mutation:
 
     def swap_mutation(self, num_swaps):
         """
-        Performs multi-swap mutation
+        Performs swap mutation
         :return: child1, child2: tuple[ndarray, ndarray]
         """
         def multi_swap(arr, num_swaps):

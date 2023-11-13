@@ -41,7 +41,7 @@ class Crossover:
 
     def crossover(self, num_points):
         """
-        Method to generate 2 different children by multi-point crossover.
+        Method to generate 2 different children by crossover.
         :param num_points: Number of crossover points.
         :return: child1, child2: ndarray, ndarray
         """
